@@ -2,6 +2,7 @@
 
 import useSWR from 'swr'
 import { FormEvent, useMemo, useState } from 'react'
+import { usePathname, useRouter } from 'next/navigation'
 import { createClient } from '@supabase/supabase-js'
 import { ArrowUpRight, Banknote, Calculator, Check, Database, Plus, RefreshCw, Users } from 'lucide-react'
 
@@ -35,7 +36,9 @@ export default function Page() {
   const employees = useSWR<Employee[]>('EMPLOYEE', fetcher)
   const salaries = useSWR<Salary[]>('SALARY', fetcher)
   const bonuses = useSWR<Bonus[]>('BONUS', fetcher)
-  const [active, setActive] = useState<'employee' | 'salary' | 'bonus'>('employee')
+  const pathname = usePathname()
+  const router = useRouter()
+  const active = pathname === '/salary' ? 'salary' : pathname === '/bonus' ? 'bonus' : 'employee'
   const [message, setMessage] = useState('')
   const [error, setError] = useState('')
   const [busy, setBusy] = useState(false)
@@ -80,7 +83,7 @@ export default function Page() {
         <div className="brand"><div className="brand-mark">AS</div><div><strong>Asia Suaka</strong><span>Payroll Control</span></div></div>
         <div className="side-label">Modul transaksi</div>
         <nav className="nav-list" aria-label="Navigasi transaksi">
-          {[['employee', 'Karyawan', Users], ['salary', 'Salary', Banknote], ['bonus', 'Bonus', Calculator]].map(([key, label, Icon]) => <button key={key as string} className={active === key ? 'nav-item active' : 'nav-item'} onClick={() => setActive(key as typeof active)}><Icon size={18} /><span>{label as string}</span><ArrowUpRight size={14} /></button>)}
+          {[['employee', 'Karyawan', Users], ['salary', 'Salary', Banknote], ['bonus', 'Bonus', Calculator]].map(([key, label, Icon]) => <button key={key as string} className={active === key ? 'nav-item active' : 'nav-item'} onClick={() => router.push(`/${key as string}`)}><Icon size={18} /><span>{label as string}</span><ArrowUpRight size={14} /></button>)}
         </nav>
         <div className="sidebar-note"><Database size={18} /><div><strong>Supabase connected</strong><span>Data tersimpan real-time</span></div></div>
       </aside>
@@ -105,4 +108,4 @@ export default function Page() {
 function Stat({ icon, label, value, detail }: { icon: React.ReactNode; label: string; value: string; detail: string }) { return <div className="stat-card"><div className="stat-icon">{icon}</div><span>{label}</span><strong>{value}</strong><small>{detail}</small></div> }
 function Field({ label, name, type = 'text', placeholder, ...props }: { label: string; name: string; type?: string; placeholder?: string; [key: string]: unknown }) { return <label>{label}<input name={name} type={type} placeholder={placeholder} {...props} /></label> }
 function Submit({ busy, label }: { busy: boolean; label: string }) { return <button className="submit" disabled={busy} type="submit"><Plus size={17} />{busy ? 'Menyimpan...' : label}</button> }
-function Report({ employees, salaries, bonuses, loading }: { employees: Employee[]; salaries: Salary[]; bonuses: Bonus[]; loading: boolean }) { const employeeName = (id: number) => employees.find((item) => item.ID_KARYAWAN === id)?.NAMA_KARYAWAN.trim() ?? '-'; return <section className="panel report-panel"><div className="panel-heading"><div><p className="eyebrow">LIVE REPORT</p><h2>Rekap transaksi bonus</h2></div><span className="record-count">{bonuses.length} record</span></div><div className="table-wrap"><table><thead><tr><th>ID Bonus</th><th>Karyawan</th><th>Periode</th><th>Salary</th><th>Rate</th><th>Total bonus</th></tr></thead><tbody>{loading ? <tr><td colSpan={6} className="empty">Memuat data...</td></tr> : bonuses.map((bonus) => { const salary = salaries.find((item) => item.ID_SALARY === bonus.ID_SALARY); return <tr key={bonus.ID_BONUS}><td><span className="id-badge">#{bonus.ID_BONUS}</span></td><td><strong>{employeeName(bonus.ID_KARYAWAN)}</strong><small>ID {bonus.ID_KARYAWAN}</small></td><td>{salary ? `${months[salary.BULAN - 1]} ${salary.TAHUN}` : '-'}</td><td>{salary ? money(salary.SALARY) : '-'}</td><td><span className="rate">{Number(bonus.BONUS) * 100}%</span></td><td className="total">{money.format(bonus.TOTAL)}</td></tr> })}{!loading && bonuses.length === 0 && <tr><td colSpan={6} className="empty">Belum ada transaksi bonus.</td></tr>}</tbody></table></div></section> }
+function Report({ employees, salaries, bonuses, loading }: { employees: Employee[]; salaries: Salary[]; bonuses: Bonus[]; loading: boolean }) { const employeeName = (id: number) => employees.find((item) => item.ID_KARYAWAN === id)?.NAMA_KARYAWAN.trim() ?? '-'; return <section className="panel report-panel"><div className="panel-heading"><div><p className="eyebrow">LIVE REPORT</p><h2>Rekap transaksi bonus</h2></div><span className="record-count">{bonuses.length} record</span></div><div className="table-wrap"><table><thead><tr><th>ID Bonus</th><th>Karyawan</th><th>Periode</th><th>Salary</th><th>Rate</th><th>Total bonus</th></tr></thead><tbody>{loading ? <tr><td colSpan={6} className="empty">Memuat data...</td></tr> : bonuses.map((bonus) => { const salary = salaries.find((item) => item.ID_SALARY === bonus.ID_SALARY); return <tr key={bonus.ID_BONUS}><td><span className="id-badge">#{bonus.ID_BONUS}</span></td><td><strong>{employeeName(bonus.ID_KARYAWAN)}</strong><small>ID {bonus.ID_KARYAWAN}</small></td><td>{salary ? `${months[salary.BULAN - 1]} ${salary.TAHUN}` : '-'}</td><td>{salary ? money(salary.SALARY) : '-'}</td><td><span className="rate">{Number(bonus.BONUS) * 100}%</span></td><td className="total">{money(bonus.TOTAL)}</td></tr> })}{!loading && bonuses.length === 0 && <tr><td colSpan={6} className="empty">Belum ada transaksi bonus.</td></tr>}</tbody></table></div></section> }
