@@ -28,7 +28,7 @@ function money(value: number) {
 }
 const months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember']
 
-type Employee = { ID_KARYAWAN: number; NAMA_KARYAWAN: string; KODE_KARYAWAN: string; TANGGAL_LAHIR: string; ALAMAT: string }
+type Employee = { ID_KARYAWAN: number; NAMA_KARYAWAN: string; KODE_KARYAWAB: string; TANGGAL_LAHIR: string; ALAMAT: string }
 type Salary = { ID_SALARY: number; BULAN: number; TAHUN: number; SALARY: number; ID_KARYAWAN: number }
 type Bonus = { ID_BONUS: number; BONUS: number; TOTAL: number; ID_KARYAWAN: number; ID_SALARY: number }
 
@@ -53,7 +53,7 @@ export default function PayrollApp({ initialActive = 'employee' }: { initialActi
   async function submitEmployee(event: FormEvent<HTMLFormElement>) {
     event.preventDefault(); setBusy(true); setMessage(''); setError('')
     const form = new FormData(event.currentTarget)
-    const { error: insertError } = await (getSupabase() as any).from('EMPLOYEE').insert({ NAMA_KARYAWAN: form.get('name'), KODE_KARYAWAN: form.get('code'), TANGGAL_LAHIR: form.get('birth'), ALAMAT: form.get('address') })
+    const { error: insertError } = await (getSupabase() as any).from('EMPLOYEE').insert({ NAMA_KARYAWAN: form.get('name'), KODE_KARYAWAB: form.get('code'), TANGGAL_LAHIR: form.get('birth'), ALAMAT: form.get('address') })
     if (insertError) setError(insertError.message); else { setMessage('Data karyawan berhasil disimpan.'); event.currentTarget.reset(); await employees.mutate() }
     setBusy(false)
   }
@@ -93,7 +93,7 @@ export default function PayrollApp({ initialActive = 'employee' }: { initialActi
         {active !== 'report' && <div className="workspace">
           <div className="panel form-panel"><div className="panel-heading"><div><p className="eyebrow">INPUT TRANSAKSI</p><h2>{active === 'employee' ? 'Master Karyawan' : active === 'salary' ? 'Transaksi Salary' : 'Transaksi Bonus'}</h2></div><span className="status-pill"><span />Terhubung</span></div>
             {active === 'employee' && <form onSubmit={submitEmployee}><Field label="Nama karyawan" name="name" placeholder="Contoh: Dimas Pratama" required /><div className="form-row"><Field label="Kode karyawan" name="code" placeholder="EMP004" maxLength={6} required /><Field label="Tanggal lahir" name="birth" type="date" required /></div><Field label="Alamat" name="address" placeholder="Alamat domisili" required /><Submit busy={busy} label="Simpan karyawan" /> </form>}
-            {active === 'salary' && <form onSubmit={submitSalary}><div className="form-row"><label> Bulan<select name="month" defaultValue="2">{months.map((month, index) => <option value={index + 1} key={month}>{month}</option>)}</select></label><Field label="Tahun" name="year" type="number" defaultValue="2026" min={2000} required /></div><label>Karyawan<select name="employee" required defaultValue=""> <option value="" disabled>Pilih karyawan</option>{employees.data?.map((employee) => <option key={employee.ID_KARYAWAN} value={employee.ID_KARYAWAN}>{employee.KODE_KARYAWAN} — {employee.NAMA_KARYAWAN.trim()}</option>)}</select></label><Field label="Nilai salary" name="salary" type="number" placeholder="12500000" min={1} required /><Submit busy={busy} label="Simpan salary" /></form>}
+            {active === 'salary' && <form onSubmit={submitSalary}><div className="form-row"><label> Bulan<select name="month" defaultValue="2">{months.map((month, index) => <option value={index + 1} key={month}>{month}</option>)}</select></label><Field label="Tahun" name="year" type="number" defaultValue="2026" min={2000} required /></div><label>Karyawan<select name="employee" required defaultValue=""> <option value="" disabled>Pilih karyawan</option>{employees.data?.map((employee) => <option key={employee.ID_KARYAWAN} value={employee.ID_KARYAWAN}>{employee.KODE_KARYAWAB} — {employee.NAMA_KARYAWAN.trim()}</option>)}</select></label><Field label="Nilai salary" name="salary" type="number" placeholder="12500000" min={1} required /><Submit busy={busy} label="Simpan salary" /></form>}
             {active === 'bonus' && <form onSubmit={submitBonus}><div className="formula-card"><Calculator size={22} /><div><strong>Formula bonus standar</strong><span>BONUS = SALARY periode × 5%</span></div><b>5%</b></div><label>Transaksi salary<select name="salaryId" required defaultValue=""><option value="" disabled>Pilih salary periode</option>{salaries.data?.map((salary) => <option key={salary.ID_SALARY} value={salary.ID_SALARY}>#{salary.ID_SALARY} · {months[salary.BULAN - 1]} {salary.TAHUN} · {money(salary.SALARY)}</option>)}</select></label><Submit busy={busy} label="Hitung & simpan bonus" /></form>}
             {message && <p className="feedback success"><Check size={15} />{message}</p>}{error && <p className="feedback error">{error}</p>}
           </div>
