@@ -1,33 +1,53 @@
-# sistem-penggajian-dan-bonus
+# Sistem Penggajian dan Bonus (PT Asia Suaka)
 
-This is a [Next.js](https://nextjs.org) project bootstrapped with [v0](https://v0.app).
+Aplikasi berbasis web untuk mengelola master data karyawan, transaksi gaji bulanan, dan perhitungan bonus otomatis (5%) untuk divisi HR Operations.
 
-## Built with v0
+## Fitur Utama
 
-This repository is linked to a [v0](https://v0.app) project. You can continue developing by visiting the link below -- start new chats to make changes, and v0 will push commits directly to this repo. Every merge to `main` will automatically deploy.
+- **Master Karyawan**: Kelola data karyawan (Nama, Kode, Tanggal Lahir, Alamat).
+- **Transaksi Salary**: Input gaji bulanan berdasarkan karyawan.
+- **Transaksi Bonus**: Perhitungan bonus otomatis sebesar 5% dari gaji yang dipilih.
+- **Live Report**: Dashboard interaktif yang menampilkan statistik dan tabel rekapitulasi bonus.
 
-[Continue working on v0 →](https://v0.app/chat/projects/prj_k5vxuJTEbYWL0LWmFb6JKkJmNd2q)
+## Tech Stack
 
-## Getting Started
+- **Framework:** [Next.js](https://nextjs.org) (App Router, React 19)
+- **Styling:** Tailwind CSS
+- **Database & Backend:** [Supabase](https://supabase.com)
+- **Data Fetching:** [SWR](https://swr.vercel.app/)
+- **Icons:** [Lucide React](https://lucide.dev/)
 
-First, run the development server:
+## Persyaratan
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
+Sebelum menjalankan proyek ini, pastikan Anda telah menginstal:
+- Node.js (v18 atau lebih baru)
+- pnpm (rekomendasi package manager)
+- Akun dan project Supabase
+
+## Konfigurasi Environment
+
+Buat file `.env.local` di root direktori proyek dan tambahkan kredensial Supabase Anda:
+
+```env
+NEXT_PUBLIC_SUPABASE_URL=https://[PROJECT_ID].supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=[YOUR_SUPABASE_ANON_KEY]
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Cara Menjalankan Proyek
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+1. **Install Dependencies**
+   ```bash
+   pnpm install
+   ```
 
-## Learn More
+2. **Jalankan Development Server**
+   ```bash
+   pnpm dev
+   ```
 
-To learn more, take a look at the following resources:
+3. **Buka Aplikasi**
+   Buka [http://localhost:3000](http://localhost:3000) di browser Anda untuk melihat aplikasi.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-- [v0 Documentation](https://v0.app/docs) - learn about v0 and how to use it.
+## Dokumentasi Tambahan
+
+- Untuk melihat Product Requirements Document, silakan baca file [`PRD.md`](./PRD.md).
