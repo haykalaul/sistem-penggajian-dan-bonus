@@ -20,8 +20,9 @@ Aplikasi berbasis web untuk mengelola master data karyawan, transaksi gaji bulan
 ## Persyaratan
 
 Sebelum menjalankan proyek ini, pastikan Anda telah menginstal:
+
 - Node.js (v18 atau lebih baru)
-- pnpm (rekomendasi package manager)
+- pnpm (rekomendasi package manager) / npm/ yarn
 - Akun dan project Supabase
 
 ## Konfigurasi Environment
@@ -36,11 +37,13 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=[YOUR_SUPABASE_ANON_KEY]
 ## Cara Menjalankan Proyek
 
 1. **Install Dependencies**
+
    ```bash
    pnpm install
    ```
 
 2. **Jalankan Development Server**
+
    ```bash
    pnpm dev
    ```
