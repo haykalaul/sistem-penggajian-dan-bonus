@@ -22,7 +22,9 @@ const fetcher = async (key: string) => {
   return data ?? []
 }
 
-const money = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 })
+function money(value: number) {
+  return `Rp ${Math.round(value).toLocaleString('id-ID')}`
+}
 const months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember']
 
 type Employee = { ID_KARYAWAN: number; NAMA_KARYAWAN: string; KODE_KARYAWAB: string; TANGGAL_LAHIR: string; ALAMAT: string }
@@ -84,7 +86,7 @@ export default function Page() {
       </aside>
       <section className="content">
         <header className="topbar"><div><p className="eyebrow">PT ASIA SUAKA / HR OPERATIONS</p><h1>Payroll & Bonus Control</h1></div><button className="refresh" onClick={refresh}><RefreshCw size={16} /> Sinkronkan data</button></header>
-        <div className="stats-grid"><Stat icon={<Users />} label="Total karyawan" value={String(employees.data?.length ?? 0)} detail="Data aktif pada master" /><Stat icon={<Banknote />} label="Total salary" value={money.format(totalSalary)} detail="Seluruh periode tercatat" /><Stat icon={<Calculator />} label="Total bonus" value={money.format(totalBonus)} detail="Formula salary × 5%" /></div>
+        <div className="stats-grid"><Stat icon={<Users />} label="Total karyawan" value={String(employees.data?.length ?? 0)} detail="Data aktif pada master" /><Stat icon={<Banknote />} label="Total salary" value={money(totalSalary)} detail="Seluruh periode tercatat" /><Stat icon={<Calculator />} label="Total bonus" value={money(totalBonus)} detail="Formula salary × 5%" /></div>
         <div className="workspace">
           <div className="panel form-panel"><div className="panel-heading"><div><p className="eyebrow">INPUT TRANSAKSI</p><h2>{active === 'employee' ? 'Master Karyawan' : active === 'salary' ? 'Transaksi Salary' : 'Transaksi Bonus'}</h2></div><span className="status-pill"><span />Terhubung</span></div>
             {active === 'employee' && <form onSubmit={submitEmployee}><Field label="Nama karyawan" name="name" placeholder="Contoh: Dimas Pratama" required /><div className="form-row"><Field label="Kode karyawan" name="code" placeholder="EMP004" maxLength={6} required /><Field label="Tanggal lahir" name="birth" type="date" required /></div><Field label="Alamat" name="address" placeholder="Alamat domisili" required /><Submit busy={busy} label="Simpan karyawan" /> </form>}
