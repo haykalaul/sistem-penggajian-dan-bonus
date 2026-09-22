@@ -48,7 +48,7 @@ export default function Page() {
   async function submitEmployee(event: FormEvent<HTMLFormElement>) {
     event.preventDefault(); setBusy(true); setMessage(''); setError('')
     const form = new FormData(event.currentTarget)
-    const { error: insertError } = await supabase.from('EMPLOYEE').insert({ NAMA_KARYAWAN: form.get('name'), KODE_KARYAWAB: form.get('code'), TANGGAL_LAHIR: form.get('birth'), ALAMAT: form.get('address') })
+    const { error: insertError } = await getSupabase().from('EMPLOYEE').insert({ NAMA_KARYAWAN: form.get('name'), KODE_KARYAWAB: form.get('code'), TANGGAL_LAHIR: form.get('birth'), ALAMAT: form.get('address') })
     if (insertError) setError(insertError.message); else { setMessage('Data karyawan berhasil disimpan.'); event.currentTarget.reset(); await employees.mutate() }
     setBusy(false)
   }
@@ -56,7 +56,7 @@ export default function Page() {
   async function submitSalary(event: FormEvent<HTMLFormElement>) {
     event.preventDefault(); setBusy(true); setMessage(''); setError('')
     const form = new FormData(event.currentTarget)
-    const { error: insertError } = await supabase.from('SALARY').insert({ BULAN: Number(form.get('month')), TAHUN: Number(form.get('year')), SALARY: Number(form.get('salary')), ID_KARYAWAN: Number(form.get('employee')) })
+    const { error: insertError } = await getSupabase().from('SALARY').insert({ BULAN: Number(form.get('month')), TAHUN: Number(form.get('year')), SALARY: Number(form.get('salary')), ID_KARYAWAN: Number(form.get('employee')) })
     if (insertError) setError(insertError.message); else { setMessage('Transaksi salary berhasil disimpan.'); event.currentTarget.reset(); await salaries.mutate() }
     setBusy(false)
   }
@@ -66,7 +66,7 @@ export default function Page() {
     const form = new FormData(event.currentTarget)
     const salary = salaries.data?.find((row) => row.ID_SALARY === Number(form.get('salaryId')))
     if (!salary) { setError('Pilih transaksi salary yang valid.'); setBusy(false); return }
-    const { error: insertError } = await supabase.from('BONUS').insert({ BONUS: 0.05, TOTAL: Number(salary.SALARY) * 0.05, ID_KARYAWAN: salary.ID_KARYAWAN, ID_SALARY: salary.ID_SALARY })
+    const { error: insertError } = await getSupabase().from('BONUS').insert({ BONUS: 0.05, TOTAL: Number(salary.SALARY) * 0.05, ID_KARYAWAN: salary.ID_KARYAWAN, ID_SALARY: salary.ID_SALARY })
     if (insertError) setError(insertError.message); else { setMessage('Bonus 5% berhasil dihitung dan disimpan.'); event.currentTarget.reset(); await bonuses.mutate() }
     setBusy(false)
   }
